@@ -6,39 +6,42 @@ class BoardingPass:
         self.id = self._get_id()
 
     def _get_row(self, ROWS=128):
-        CHOICES = list(range(0, ROWS))
         row_partition = self.partition[:7]
-        for partition in row_partition:
-            halved = int(len(CHOICES) / 2)
-            if partition == "F":
-                CHOICES = CHOICES[:halved]
-            elif partition == "B":
-                CHOICES = CHOICES[halved:]
-            else:
-                raise ValueError("Invalid ROW partiion:", partition)
-
-        if len(CHOICES) != 1:
-            raise Exception(
-                "Unable to determine row based on # of ROWS vs # of partitions."
-            )
-
-        return CHOICES[0]
+        return self._binary_partition(
+            partitions=row_partition,
+            partitionA_ind="F",
+            partitionB_ind="B",
+            MAX=ROWS,
+        )
 
     def _get_column(self, COLUMNS=8):
-        CHOICES = list(range(0, COLUMNS))
         col_partition = self.partition[7:]
-        for partition in col_partition:
+        return self._binary_partition(
+            partitions=col_partition,
+            partitionA_ind="L",
+            partitionB_ind="R",
+            MAX=COLUMNS,
+        )
+
+    def _binary_partition(
+        self, partitions="", partitionA_ind="", partitionB_ind="", MAX=0
+    ):
+        if not partitions or not partitionA_ind or not partitionB_ind or not max:
+            raise ValueError("Invalid arguments.")
+
+        CHOICES = list(range(0, MAX))
+        for partition in partitions:
             halved = int(len(CHOICES) / 2)
-            if partition == "L":
+            if partition == partitionA_ind:
                 CHOICES = CHOICES[:halved]
-            elif partition == "R":
+            elif partition == partitionB_ind:
                 CHOICES = CHOICES[halved:]
             else:
-                raise ValueError("Invalid COL partiion:", partition)
+                raise ValueError("Invalid partiion:", partition)
 
         if len(CHOICES) != 1:
             raise Exception(
-                "Unable to determine row based on # of Columns vs # of partitions."
+                "Unable to determine seat based on max # vs # of partitions."
             )
 
         return CHOICES[0]
