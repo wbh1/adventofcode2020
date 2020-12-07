@@ -1,32 +1,23 @@
 class Bag:
     def __init__(self, color):
         self.color = color
-        self.contents = {}
-        if BAG_CRITERIA[color]:
-            # If there are subbags, populate them.
-            self.get_sub_bags(color)
-        print(self.contents)
+        self.contents = BAG_CRITERIA[color]
 
-    def get_sub_bags(self, containing_bag_color):
-        for color, count in BAG_CRITERIA[containing_bag_color].items():
-            if color in self.contents.keys():
-                self.contents[color] += count
-            else:
-                self.contents[color] = count
-            if BAG_CRITERIA[color]:
-                for i in range(count):
-                    self.get_sub_bags(color)
+        for bag_color, count in self.contents.items():
+            self.contents = self._merge_dicts(
+                self.contents, Bag(bag_color).contents, count
+            )
 
-    def _merge_dicts(self, dictA: dict, dictB: dict):
+    def _merge_dicts(self, dictA: dict, dictB: dict, multiplier):
         new_dict = dictA.copy()
         if not dictB:
             return new_dict
 
-        for key, value in dictB:
+        for key, value in dictB.items():
             if key in new_dict:
-                new_dict[key] += value
+                new_dict[key] += value * multiplier
             else:
-                new_dict[key] = value
+                new_dict[key] = value * multiplier
 
         return new_dict
 
