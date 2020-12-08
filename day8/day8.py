@@ -3,9 +3,6 @@ class BIOS:
         self.accumulator = 0
         self.instruction_set = instruction_set
 
-        # Not using a Python `set` because of the need to exit when
-        # an instruction is run a second time
-
     def execute(self, instruction_set=[]):
         index = 0
         max_index = len(instruction_set)
@@ -16,10 +13,10 @@ class BIOS:
         while True:
             if index in instruction_lines_ran:
                 raise ValueError(
-                    "You already ran",
-                    instruction_set[index],
-                    ". Accumulator is at:",
-                    self.accumulator,
+                    "You already ran "
+                    + instruction_set[index]
+                    + ". Accumulator is at: "
+                    + str(self.accumulator)
                 )
 
             if len(instruction_lines_ran) > len(instruction_set):
@@ -57,23 +54,6 @@ class BIOS:
             self.accumulator = 0
 
         print(self.accumulator)
-
-    def _hypothetical(self, instruction, index, max_index):
-        """Return a bool for whether switching instruction
-        from jmp -> nop or nop -> jmp would result in the program terminating.
-        """
-        operation = instruction[:3]
-        if operation == "acc":
-            return
-        elif operation == "jmp":
-            instruction = instruction.replace("jmp", "nop")
-        elif operation == "nop":
-            instruction = instruction.replace("nop", "jmp")
-
-        if index + self._run_instruction(instruction) == max_index:
-            return True
-
-        return False
 
     def _run_instruction(self, instruction, write=True):
         split = instruction.split(" ")
