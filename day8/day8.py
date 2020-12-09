@@ -46,16 +46,21 @@ class BIOS:
             hypothetical_set[index] = instruction
 
             try:
+                # If it actually excecutes completely without raising an error
+                # we found our winner
                 self.execute(instruction_set=hypothetical_set)
-                break
+                return True
             except ValueError:
                 pass
 
             self.accumulator = 0
 
-        print(self.accumulator)
+        return False
 
     def _run_instruction(self, instruction, write=True):
+        """Execute an instruction, increment the accumulator if needed,
+        then return the index modifier
+        """
         split = instruction.split(" ")
         operation = split[0]
         num = int(split[1])
@@ -79,4 +84,7 @@ with open("input.txt") as f:
     except ValueError as e:
         print(e)
 
-    boot.fix()
+    if boot.fix():
+        print(boot.accumulator, "is the value of accumulator after fixing.")
+    else:
+        print("Hmm... No fix found.")
