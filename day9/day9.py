@@ -3,6 +3,8 @@ class XMAS:
         self.cypher = [int(x) for x in input]
 
     def validate(self):
+        """ Returns nothing if valid, returns number that invalidates
+        cypher if it's not valid """
         import itertools
 
         preamble = self.cypher[:25]
@@ -20,7 +22,7 @@ class XMAS:
 
     def crack(self, failure):
         for index, number in enumerate(self.cypher):
-            permutation = self._permute(index, failure)
+            permutation = self._permute_to_sum(index, failure)
             if permutation:
                 print(
                     min(permutation),
@@ -30,7 +32,14 @@ class XMAS:
                 )
                 print(min(permutation) + max(permutation), "is their sum.")
 
-    def _permute(self, start, desired_result):
+    def _permute_to_sum(self, start, desired_result):
+        """Generates contiguous permutations of the cypher starting at
+        a specific index.
+
+        If the sum of a permutation is equal to the desired result,
+        return the list containing the numbers comprising the permutation.
+        Otherwise, return nothing."""
+
         import itertools
 
         numbers = self.cypher
@@ -47,4 +56,5 @@ with open("input.txt") as f:
 
     app = XMAS(input)
     failure = app.validate()
-    app.crack(failure)
+    if failure:
+        app.crack(failure)
