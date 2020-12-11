@@ -50,4 +50,3 @@ with open("input.txt") as f:
 
     print("Part 1:", DIFFERENCES[1] * DIFFERENCES[3])
     print(part2(ADAPTERS))
-    # perms = tree(Adapter(0), [], ADAPTERS)
