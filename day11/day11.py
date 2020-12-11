@@ -48,9 +48,7 @@ def shuffle(input, adjacents_allowed):
 def output(input):
     occ = 0
     for row in input:
-        for s in row:
-            if s == "#":
-                occ += 1
+        occ += row.count("#")
     print(occ)
 
 
