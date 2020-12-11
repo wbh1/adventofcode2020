@@ -5,7 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 flake8 = "*"
-black = "*"
+black = "==20.8b0"
 
 [packages]
 
