@@ -26,38 +26,72 @@ def part2(input):
         if b != "x":
             BUSSES.append(Bus(int(b)))
         else:
-            BUSSES.append(Bus(1))
+            BUSSES.append(None)
     """OK so.
     The first bus has an ID of 13.
     The second bus has an ID of 37.
-    You can calculate when these busses overlap the way they are supposed
-    by finding the LCM of bus1 and bus2+offset
-    bus1 * x = T
-    bus2 will be divisible into T + offset
+    You can calculate when these busses overlap the way they are supposed to by finding x
+        bus1 * x = T
+        (T + offset) % bus2 = 0
+    The only time they intercept is at multiples of T, so increase timestamp by that each time.
     """
-    from math import gcd
-    from functools import reduce
 
     def lcm(denominators):
-        return reduce(lambda a, b: a * b // gcd(a, b), denominators)
-    
-    b_ids = [b.ID for b in BUSSES]
-    print(lcm(b_ids))
+        from math import gcd
+        from functools import reduce
 
-    # TS = 100000000000000
-    # for i1, bus1 in enumerate(BUSSES):
-    #     if bus1 == "x":
+        return reduce(lambda a, b: a * b // gcd(a, b), denominators)
+
+    intervals = []
+    starter_bus = BUSSES[0]
+    for bus in BUSSES[1:]:
+        if not bus:
+            continue
+        t_offset = BUSSES.index(bus)
+        t = 0
+        x = 0
+        done = False
+        while not done:
+            t = starter_bus.ID * x
+            done = (t + t_offset) % bus.ID == 0
+            if not done:
+                x += t_offset
+            else:
+                print(
+                    f"{starter_bus.ID} and {bus.ID} align correctly every {t}s. Offset: {t_offset}"
+                )
+                intervals.append(t)
+
+    print(lcm(intervals))
+
+    # for bus in BUSSES:
+    #     if not bus:
     #         continue
-    #     next_bus = next((b for b in BUSSES[BUSSES.index(bus1) + 1 :] if b != "x"), None)
+    #     next_bus = next(
+    #         (b for b in BUSSES[BUSSES.index(bus) + 1 :] if b is not None), None
+    #     )
     #     if not next_bus:
     #         break
-    #     offset = BUSSES.index(next_bus) - i1
+    #     offset = BUSSES.index(next_bus) - BUSSES.index(bus)
+    #     seconds_since_t = BUSSES.index(bus)
+
     #     done = False
+    #     x = 0
+    #     t = 0
     #     while not done:
-    #         done = ((bus1.ID * TS) + offset) % next_bus.ID == 0
+    #         t = bus.ID * x
+    #         done = (t + offset) % next_bus.ID == 0
     #         if not done:
-    #             TS += 1
-    #     print(TS)
+    #             x += offset
+    # else:
+    #     print(f"{bus.ID} and {next_bus.ID} align correctly every {t}s. Offset: {offset}")
+    #     intervals.append(t)
+
+    # def lcm(denominators):
+    #     from math import gcd
+    #     from functools import reduce
+    #     return reduce(lambda a, b: a * b // gcd(a, b), denominators)
+    # print(lcm(intervals))
 
 
 with open("input.txt") as f:
