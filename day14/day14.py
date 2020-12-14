@@ -1,14 +1,46 @@
 class Computer:
     def __init__(self, mask):
         self.mask = mask
-        self.memory = [0 for i in range(0, 128000)]
+        self.memory = {}
 
     def set_mask(self, mask):
         self.mask = mask
 
-    def write_to_memory(self, pos, val):
+    def write_to_memory(self, pos, val, version=1):
         val = bin(val)[2:].zfill(36)
-        self.memory[pos] = self._mask_value(val)
+        if version == 1:
+            self.memory[pos] = self._mask_value(val)
+        else:
+            pos = bin(pos)[2:].zfill(36)
+            positions = self._mask_pos(pos)
+            for p in positions:
+                self.memory[p] = int(val, 2)
+
+    def _mask_pos(self, pos: str):
+        import itertools
+
+        masked_pos = ""
+        for i, bit in enumerate(pos):
+            if self.mask[i] != "0":
+                masked_pos += self.mask[i]
+            else:
+                masked_pos += bit
+
+        positions = []
+        floaters = self.mask.count("X")
+        permutations = itertools.product(range(2), repeat=floaters)
+
+        for p in permutations:
+            p = list(p)
+            pos = ""
+            for d in masked_pos:
+                if d == "X":
+                    pos += str(p.pop())
+                else:
+                    pos += d
+            positions.append(pos)
+
+        return positions
 
     def _mask_value(self, val):
         new_val = ""
@@ -35,4 +67,17 @@ with open("input.txt") as f:
         else:
             dest = memory_re.match(instruction)[1]
             c.write_to_memory(int(dest), int(val))
-    print(sum(c.memory))
+    print("Part 1:", sum(c.memory.values()))
+
+    c = Computer(input[0].split(" = ")[1])
+    memory_re = re.compile("mem\[([0-9]+)\]")
+    for line in input[1:]:
+        s = line.split(" = ")
+        instruction = s[0]
+        val = s[1]
+        if "mask" in instruction:
+            c.set_mask(val)
+        else:
+            dest = memory_re.match(instruction)[1]
+            c.write_to_memory(int(dest), int(val), version=2)
+    print("Part 2:", sum(c.memory.values()))
