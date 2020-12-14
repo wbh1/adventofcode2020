@@ -17,88 +17,41 @@ def part1(input):
     sorted_waits = {
         k: v for k, v in sorted(waittimes.items(), key=lambda item: item[1])
     }
-    print(list(sorted_waits.keys())[0].ID * list(sorted_waits.values())[0])
+    print("Part 1:", list(sorted_waits.keys())[0].ID * list(sorted_waits.values())[0])
 
 
 def part2(input):
-    BUSSES = []
-    for b in input[1].split(","):
-        if b != "x":
-            BUSSES.append(Bus(int(b)))
-        else:
-            BUSSES.append(None)
-    """OK so.
-    The first bus has an ID of 13.
-    The second bus has an ID of 37.
-    You can calculate when these busses overlap the way they are supposed to by finding x
-        bus1 * x = T
-        (T + offset) % bus2 = 0
-    The only time they intercept is at multiples of T, so increase timestamp by that each time.
+    from itertools import count
+
+    ts = int(input[0])  # earliest departure time
+
+    input = [int(x) if x != "x" else x for x in input[1].split(",")]
+    buses = tuple((i, b) for i, b in enumerate(input) if b != "x")
+
+    step = 1
+    """Starting at the earliest departure time,
+    count forwards by `step`, setting the timestamp `ts` to the value
+    in which the timestamp + the index of the bus align correctly.
+    That is to say, in which the timestamp + the bus's offset
+    divided by the bus's index leaves a remainder of 0.
+
+    After finding the timestamp for one bus, proceed to the next one
+    but first set the step that you are iterating by to be the previous
+    step multiplied by the bus's ID since that bus will only fulfill
+    the criteria described above at every `step` seconds. This greatly
+    improves the run time of the program.
+
+    To be honest, this still turns my brain into knots and my solution
+    was heavily influenced by hints I found online. Supposedly this
+    can be solved using Chinese Remainder Theorem but I don't know that.
     """
-
-    def lcm(denominators):
-        from math import gcd
-        from functools import reduce
-
-        return reduce(lambda a, b: a * b // gcd(a, b), denominators)
-
-    intervals = []
-    starter_bus = BUSSES[0]
-    for bus in BUSSES[1:]:
-        if not bus:
-            continue
-        t_offset = BUSSES.index(bus)
-        t = 0
-        x = 0
-        done = False
-        while not done:
-            t = starter_bus.ID * x
-            done = (t + t_offset) % bus.ID == 0
-            if not done:
-                x += t_offset
-            else:
-                print(
-                    f"{starter_bus.ID} and {bus.ID} align correctly every {t}s. Offset: {t_offset}"
-                )
-                intervals.append(t)
-
-    print(lcm(intervals))
-
-    # for bus in BUSSES:
-    #     if not bus:
-    #         continue
-    #     next_bus = next(
-    #         (b for b in BUSSES[BUSSES.index(bus) + 1 :] if b is not None), None
-    #     )
-    #     if not next_bus:
-    #         break
-    #     offset = BUSSES.index(next_bus) - BUSSES.index(bus)
-    #     seconds_since_t = BUSSES.index(bus)
-
-    #     done = False
-    #     x = 0
-    #     t = 0
-    #     while not done:
-    #         t = bus.ID * x
-    #         done = (t + offset) % next_bus.ID == 0
-    #         if not done:
-    #             x += offset
-    # else:
-    #     print(f"{bus.ID} and {next_bus.ID} align correctly every {t}s. Offset: {offset}")
-    #     intervals.append(t)
-
-    # def lcm(denominators):
-    #     from math import gcd
-    #     from functools import reduce
-    #     return reduce(lambda a, b: a * b // gcd(a, b), denominators)
-    # print(lcm(intervals))
+    for i, b in buses:
+        ts = next(c for c in count(ts, step) if (c + i) % b == 0)
+        step *= b
+    print("Part 2:", ts)
 
 
 with open("input.txt") as f:
     input = f.read().splitlines()
     part1(input)
-    # part2(input)
-
-with open("test.txt") as f:
-    input = f.read().splitlines()
     part2(input)
