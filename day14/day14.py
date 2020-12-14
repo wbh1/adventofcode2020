@@ -56,28 +56,17 @@ with open("input.txt") as f:
     import re
 
     input = f.read().splitlines()
-    c = Computer(input[0].split(" = ")[1])
     memory_re = re.compile("mem\[([0-9]+)\]")
-    for line in input[1:]:
-        s = line.split(" = ")
-        instruction = s[0]
-        val = s[1]
-        if "mask" in instruction:
-            c.set_mask(val)
-        else:
-            dest = memory_re.match(instruction)[1]
-            c.write_to_memory(int(dest), int(val))
-    print("Part 1:", sum(c.memory.values()))
 
-    c = Computer(input[0].split(" = ")[1])
-    memory_re = re.compile("mem\[([0-9]+)\]")
-    for line in input[1:]:
-        s = line.split(" = ")
-        instruction = s[0]
-        val = s[1]
-        if "mask" in instruction:
-            c.set_mask(val)
-        else:
-            dest = memory_re.match(instruction)[1]
-            c.write_to_memory(int(dest), int(val), version=2)
-    print("Part 2:", sum(c.memory.values()))
+    for i in [1, 2]:
+        c = Computer(input[0].split(" = ")[1])
+        for line in input[1:]:
+            s = line.split(" = ")
+            instruction = s[0]
+            val = s[1]
+            if "mask" in instruction:
+                c.set_mask(val)
+            else:
+                dest = memory_re.match(instruction)[1]
+                c.write_to_memory(int(dest), int(val), version=i)
+        print(f"Part {i}:", sum(c.memory.values()))
