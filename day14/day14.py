@@ -56,7 +56,7 @@ with open("input.txt") as f:
     import re
 
     input = f.read().splitlines()
-    memory_re = re.compile("mem\[([0-9]+)\]")
+    memory_re = re.compile(r"mem\[([0-9]+)\]")
 
     for i in [1, 2]:
         c = Computer(input[0].split(" = ")[1])
