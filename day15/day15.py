@@ -1,18 +1,19 @@
-spoken_nums = [20, 0, 1, 11, 6, 3]
-next_num = 0
-for loop in range(len(spoken_nums), 2020):
-    prev_num = spoken_nums[loop - 1]
-    if spoken_nums.count(prev_num) == 1:
-        next_num = 0
-    else:
-        indices_of_prev_num = [
-            i for i in range(len(spoken_nums)) if spoken_nums[i] == prev_num
-        ]
-        indices_of_prev_num.sort()
-        last_occ = indices_of_prev_num[-1] + 1
-        second_last_occ = indices_of_prev_num[-2] + 1
-        next_num = last_occ - second_last_occ
+for i in [2020, 30000000]:
+    spoken_nums = {k: [i] for i, k in enumerate([20, 0, 1, 11, 6, 3])}
+    next_num = list(spoken_nums.keys())[-1]
+    for loop in range(len(spoken_nums.keys()), i):
+        """Keeping the try/except in the else block
+        speeds it up by about 5s."""
+        if len(spoken_nums[next_num]) == 1:
+            next_num = 0
+            spoken_nums[next_num].append(loop)
+        else:
+            # Next number is the most recent occurence of a number, minus
+            # the second most recent occurrence of a number
+            next_num = spoken_nums[next_num][-1] - spoken_nums[next_num][-2]
+            try:
+                spoken_nums[next_num].append(loop)
+            except KeyError:
+                spoken_nums[next_num] = [loop]
 
-    spoken_nums.append(next_num)
-
-print(spoken_nums[-1])
+    print(next_num)
