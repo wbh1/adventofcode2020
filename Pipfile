@@ -9,6 +9,8 @@ black = "==20.8b0"
 
 [packages]
 pyparsing = "*"
+numpy = "*"
+scipy = "*"
 
 [requires]
 python_version = "3.8"
