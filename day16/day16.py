@@ -43,7 +43,6 @@ class TicketValidator:
                     val = v[0]
                     for field in field_indices.keys():
                         if field != k and val in field_indices[field]:
-                            print(f"Removing {val} from {field}")
                             field_indices[field].remove(val)
             if (
                 max([len(possibilities) for possibilities in field_indices.values()])
