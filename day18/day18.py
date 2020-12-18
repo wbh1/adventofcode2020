@@ -25,9 +25,9 @@ def solve_problem(problem: pp.ParseResults):
     while len(subgroups) >= 3:
         # Get a number, an operator, and another number. Do math on it.
         # Use the map function to create a string version of each input first.
-        res = eval("".join(map(str, subgroups[0:3])))
+        result = eval("".join(map(str, subgroups[0:3])))
         # Replace the input with the result in the subgroups list
-        subgroups = [res] + subgroups[3:]
+        subgroups = [result] + subgroups[3:]
     return int(subgroups[0])
 
 
