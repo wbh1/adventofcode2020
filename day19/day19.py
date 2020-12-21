@@ -19,7 +19,7 @@ def match_rule(rule_id, part2=False):
             r42 = match_rule("42")
             r31 = match_rule("31")
             return (
-                "(?:"
+                "("
                 + "|".join(
                     "{0}{1}{2}{1}".format(r42, "{" + str(n) + "}", r31)
                     for n in range(1, 10)
@@ -37,7 +37,7 @@ def match_rule(rule_id, part2=False):
         nums = side.split(" ")
         result.append("".join(match_rule(r, part2=part2) for r in nums))
     # '?:' means match everything inside
-    return "(?:" + "|".join(result) + ")"
+    return "(" + "|".join(result) + ")"
 
 
 def part1():
@@ -54,7 +54,6 @@ def part2():
     RULES["8"] = "42 | 42 8"
     RULES["11"] = "42 31 | 42 11 31"
     reg = match_rule("0", part2=True)
-    print(reg)
 
     matches = 0
     for m in MESSAGES:
