@@ -11,6 +11,8 @@ black = "==20.8b0"
 pyparsing = "*"
 numpy = "*"
 scipy = "*"
+ipynb = "*"
+jupyter = "*"
 
 [requires]
 python_version = "3.8"
