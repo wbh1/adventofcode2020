@@ -22,15 +22,13 @@ def solve(data):
     cur_cup = cups[8]
     move = 1
     for _ in range(100):
-        """-- move 1 --
-        cups: (3) 8  9  1  2  5  4  6  7
-        pick up: 8, 9, 1
-        destination: 2"""
         cur_cup = cups[next_index(cups.index(cur_cup))]
         print(f"-- move {move} --")
         print(
-            "cups:", " ".join([str(n) for n in cups]).replace(str(cur_cup), f"({cur_cup})")
+            "cups:",
+            " ".join([str(n) for n in cups]).replace(str(cur_cup), f"({cur_cup})"),
         )
+
         next_cups = [cups[i] for i in next_cup_indices(cups.index(cur_cup))]
         print("pick up:", ", ".join(str(n) for n in next_cups))
         for c in next_cups:
@@ -44,6 +42,7 @@ def solve(data):
             else:
                 dest_cup -= 1
         print("destination:", dest_cup, "\n")
+
         dest_index = cups.index(dest_cup)
         for c in next_cups:
             dest_index += 1
